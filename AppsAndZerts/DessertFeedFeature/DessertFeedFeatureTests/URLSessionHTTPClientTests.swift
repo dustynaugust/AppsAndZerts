@@ -8,7 +8,6 @@
 import XCTest
 
 final class URLSessionHTTPClientTests: XCTestCase {
-    
     override func setUp() {
         super.setUp()
         
@@ -16,15 +15,9 @@ final class URLSessionHTTPClientTests: XCTestCase {
     }
     
     override func tearDown()  {
-        
+        URLProtocolStub.stopInterceptingRequests()
         
         super.tearDown()
-    }
-    
-    private func startInterceptingRequests() {
-        URLProtocolStub.startInterceptingRequests()
-        addTeardownBlock { URLProtocolStub.stopInterceptingRequests() }
-        
     }
 }
 
@@ -37,7 +30,7 @@ extension URLSessionHTTPClientTests {
         let sut = URLSessionHTTPClient()
         
         do {
-            try await sut.makeRequest()
+            let _ = try await sut.makeRequest()
             XCTFail("Expected error to be thrown.")
         } catch {
             // Success
@@ -55,11 +48,29 @@ extension URLSessionHTTPClientTests {
         let sut = URLSessionHTTPClient()
         
         do {
-            try await sut.makeRequest()
+            let _ = try await sut.makeRequest()
             XCTFail("Expected error to be thrown.")
         } catch {
             XCTAssertEqual(error as? URLSessionHTTPClient.Error, .unexpectedServerError)
         }
+    }
+    
+    func test_makeRequest_ReturnsExpectedHTTPURLResponse() async throws {
+        let url = URL(string: "http://any-url.com")!
+        let expectedResponse = HTTPURLResponse(url: url,
+                                       statusCode: 200,
+                                       httpVersion: nil,
+                                       headerFields: nil)
+        URLProtocolStub.stub(data: nil, response: expectedResponse, error: nil)
+        
+        let sut = URLSessionHTTPClient()
+        let actualResponse = try await sut.makeRequest()
+        
+        let expectedStatusCode = try XCTUnwrap(expectedResponse?.statusCode)
+        XCTAssertEqual(actualResponse.statusCode, expectedStatusCode)
+        
+        let expectedURL = try XCTUnwrap(expectedResponse?.url)
+        XCTAssertEqual(actualResponse.url, expectedURL)
     }
 }
 
@@ -71,7 +82,7 @@ struct URLSessionHTTPClient {
     
     private let session = URLSession.shared
     
-    func makeRequest() async throws {
+    func makeRequest() async throws -> HTTPURLResponse {
         let url = URL(string: "http://any-url.com")!
         let request = URLRequest(url: url)
         
@@ -82,6 +93,8 @@ struct URLSessionHTTPClient {
         else {
             throw Error.unexpectedServerError
         }
+        
+        return httpURLResponse
     }
 }
 
