@@ -15,7 +15,3 @@ struct AppsAndZertsApp: App {
         }
     }
 }
-
-struct HTTPUtility {
-    private let sessi
-}
