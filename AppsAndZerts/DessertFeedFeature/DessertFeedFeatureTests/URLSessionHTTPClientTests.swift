@@ -64,13 +64,29 @@ extension URLSessionHTTPClientTests {
         URLProtocolStub.stub(data: nil, response: expectedResponse, error: nil)
         
         let sut = URLSessionHTTPClient()
-        let actualResponse = try await sut.makeRequest()
+        let (_, actualResponse) = try await sut.makeRequest()
         
         let expectedStatusCode = try XCTUnwrap(expectedResponse?.statusCode)
         XCTAssertEqual(actualResponse.statusCode, expectedStatusCode)
         
         let expectedURL = try XCTUnwrap(expectedResponse?.url)
         XCTAssertEqual(actualResponse.url, expectedURL)
+    }
+    
+    func test_makeRequest_ReturnsExpectedData() async throws {
+        let url = URL(string: "http://any-url.com")!
+        let response = HTTPURLResponse(url: url,
+                                       statusCode: 200,
+                                       httpVersion: nil,
+                                       headerFields: nil)
+        let expectedData = Data(count: 666)
+        
+        URLProtocolStub.stub(data: expectedData, response: response, error: nil)
+        
+        let sut = URLSessionHTTPClient()
+        let (actualData, _) = try await sut.makeRequest()
+        
+        XCTAssertEqual(actualData, expectedData)
     }
 }
 
@@ -82,7 +98,7 @@ struct URLSessionHTTPClient {
     
     private let session = URLSession.shared
     
-    func makeRequest() async throws -> HTTPURLResponse {
+    func makeRequest() async throws -> (data: Data, httpURLResponse: HTTPURLResponse) {
         let url = URL(string: "http://any-url.com")!
         let request = URLRequest(url: url)
         
@@ -94,7 +110,7 @@ struct URLSessionHTTPClient {
             throw Error.unexpectedServerError
         }
         
-        return httpURLResponse
+        return (data, httpURLResponse)
     }
 }
 
