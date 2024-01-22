@@ -27,10 +27,8 @@ extension URLSessionHTTPClientTests {
         let error = NSError(domain: "any-error", code: 1, userInfo: ["user": "info"])
         URLProtocolStub.stub(data: nil, response: nil, error: error)
         
-        let sut = URLSessionHTTPClient()
-        
         do {
-            let _ = try await sut.makeRequest()
+            let _ = try await URLSessionHTTPClient.makeRequest()
             XCTFail("Expected error to be thrown.")
         } catch {
             // Success
@@ -45,10 +43,8 @@ extension URLSessionHTTPClientTests {
                                    textEncodingName: nil)
         URLProtocolStub.stub(data: nil, response: response, error: nil)
         
-        let sut = URLSessionHTTPClient()
-        
         do {
-            let _ = try await sut.makeRequest()
+            let _ = try await URLSessionHTTPClient.makeRequest()
             XCTFail("Expected error to be thrown.")
         } catch {
             XCTAssertEqual(error as? URLSessionHTTPClient.Error, .unexpectedServerError)
@@ -63,8 +59,7 @@ extension URLSessionHTTPClientTests {
                                        headerFields: nil)
         URLProtocolStub.stub(data: nil, response: expectedResponse, error: nil)
         
-        let sut = URLSessionHTTPClient()
-        let (_, actualResponse) = try await sut.makeRequest()
+        let (_, actualResponse) = try await URLSessionHTTPClient.makeRequest()
         
         let expectedStatusCode = try XCTUnwrap(expectedResponse?.statusCode)
         XCTAssertEqual(actualResponse.statusCode, expectedStatusCode)
@@ -83,26 +78,22 @@ extension URLSessionHTTPClientTests {
         
         URLProtocolStub.stub(data: expectedData, response: response, error: nil)
         
-        let sut = URLSessionHTTPClient()
-        let (actualData, _) = try await sut.makeRequest()
+        let (actualData, _) = try await URLSessionHTTPClient.makeRequest()
         
         XCTAssertEqual(actualData, expectedData)
     }
 }
 
-
-struct URLSessionHTTPClient {
+enum URLSessionHTTPClient {
     enum Error: Swift.Error {
         case unexpectedServerError
     }
-    
-    private let session = URLSession.shared
-    
-    func makeRequest() async throws -> (data: Data, httpURLResponse: HTTPURLResponse) {
+        
+    static func makeRequest() async throws -> (data: Data, httpURLResponse: HTTPURLResponse) {
         let url = URL(string: "http://any-url.com")!
         let request = URLRequest(url: url)
         
-        let (data, urlResponse) = try await session.data(for: request)
+        let (data, urlResponse) = try await URLSession.shared.data(for: request)
         
         guard
             let httpURLResponse = urlResponse as? HTTPURLResponse
