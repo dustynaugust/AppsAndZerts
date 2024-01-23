@@ -9,6 +9,16 @@ import XCTest
 @testable import AppsAndZerts
 
 final class LoadDessertFeedFromServerTests: XCTestCase {
+    func test_init_doesNotRequestDataFromURL() throws {
+        let anyRequest = try anyURLRequest()
+        let client = HTTPClientSpy(data: Data(count: 666),
+                                   httpURLResponse: try successfulHTTPURLResponse())
+        let _ = DessertFeedLoader(client: client,
+                                    request: anyRequest)
+        
+        XCTAssertTrue(client.urlRequests.isEmpty)
+    }
+    
     func test_load_requestsDataFromURLRequest() async throws {
         let anyRequest = try anyURLRequest()
         let client = HTTPClientSpy(data: Data(count: 666),
