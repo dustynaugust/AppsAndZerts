@@ -24,8 +24,7 @@ final class URLSessionHTTPClientTests: XCTestCase {
 // MARK: - .makeRequest() Test(s)
 extension URLSessionHTTPClientTests {
     func test_makeRequest_FailsOnError() async {
-        let error = NSError(domain: "any-error", code: 1, userInfo: ["user": "info"])
-        URLProtocolStub.stub(data: nil, response: nil, error: error)
+        URLProtocolStub.stub(data: nil, response: nil, error: anyNSError())
         
         do {
             let _ = try await URLSessionHTTPClient.makeRequest()
@@ -35,12 +34,8 @@ extension URLSessionHTTPClientTests {
         }
     }
     
-    func test_makeRequest_ThrowsUnexpectedServerError_WhenUnexpectedResponseRecieved() async {
-        let url = URL(string: "http://any-url.com")!
-        let response = URLResponse(url: url,
-                                   mimeType: nil,
-                                   expectedContentLength: 1,
-                                   textEncodingName: nil)
+    func test_makeRequest_ThrowsUnexpectedServerError_WhenUnexpectedResponseRecieved() async throws {
+        let response = try anyURLResponse()
         URLProtocolStub.stub(data: nil, response: response, error: nil)
         
         do {
@@ -52,37 +47,28 @@ extension URLSessionHTTPClientTests {
     }
     
     func test_makeRequest_ReturnsExpectedHTTPURLResponse() async throws {
-        let url = URL(string: "http://any-url.com")!
-        let expectedResponse = HTTPURLResponse(url: url,
-                                       statusCode: 200,
-                                       httpVersion: nil,
-                                       headerFields: nil)
-        URLProtocolStub.stub(data: nil, response: expectedResponse, error: nil)
+        let expected = try successfulHTTPURLResponse()
+        URLProtocolStub.stub(data: nil, response: expected, error: nil)
         
-        let (_, actualResponse) = try await URLSessionHTTPClient.makeRequest()
+        let (_, actual) = try await URLSessionHTTPClient.makeRequest()
         
-        let expectedStatusCode = try XCTUnwrap(expectedResponse?.statusCode)
-        XCTAssertEqual(actualResponse.statusCode, expectedStatusCode)
-        
-        let expectedURL = try XCTUnwrap(expectedResponse?.url)
-        XCTAssertEqual(actualResponse.url, expectedURL)
+        XCTAssertEqual(actual.statusCode, expected.statusCode)
+        XCTAssertEqual(actual.url, expected.url)
     }
     
     func test_makeRequest_ReturnsExpectedData() async throws {
-        let url = URL(string: "http://any-url.com")!
-        let response = HTTPURLResponse(url: url,
-                                       statusCode: 200,
-                                       httpVersion: nil,
-                                       headerFields: nil)
-        let expectedData = Data(count: 666)
+        let response = try successfulHTTPURLResponse()
+        let expected = Data(count: 666)
         
-        URLProtocolStub.stub(data: expectedData, response: response, error: nil)
+        URLProtocolStub.stub(data: expected, response: response, error: nil)
         
-        let (actualData, _) = try await URLSessionHTTPClient.makeRequest()
+        let (actual, _) = try await URLSessionHTTPClient.makeRequest()
         
-        XCTAssertEqual(actualData, expectedData)
+        XCTAssertEqual(actual, expected)
     }
 }
+
+
 
 enum URLSessionHTTPClient {
     enum Error: Swift.Error {
