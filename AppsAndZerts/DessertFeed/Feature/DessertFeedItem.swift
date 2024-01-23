@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct DessertFeedItem: Equatable {
+struct DessertFeedItem: Hashable {
     let name: String
     let thumbnail: URL
     let mealID: String

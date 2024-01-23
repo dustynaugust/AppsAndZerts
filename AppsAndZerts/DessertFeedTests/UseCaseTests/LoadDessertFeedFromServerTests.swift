@@ -16,22 +16,9 @@ final class LoadDessertFeedFromServerTests: XCTestCase {
         file: StaticString = #filePath,
         line: UInt = #line
     ) throws -> (sut: DessertFeedLoader, client: HTTPClientSpy) {
-        try makeSUT(request: try anyURLRequest(),
-                    result: result,
-                    file: file,
-                    line: line)
-    }
-    
-    private func makeSUT(
-        request: URLRequest,
-        result: HTTPClientSpy.Result,
-        file: StaticString = #filePath,
-        line: UInt = #line
-    ) throws -> (sut: DessertFeedLoader, client: HTTPClientSpy) {
         let client = HTTPClientSpy(result: result)
         
-        let sut = DessertFeedLoader(client: client,
-                                    request: request)
+        let sut = DessertFeedLoader(client: client)
         
         return (sut, client)
     }
@@ -115,11 +102,8 @@ final class LoadDessertFeedFromServerTests: XCTestCase {
 // MARK: - .init(client:request:) Test(s)
 extension LoadDessertFeedFromServerTests {
     func test_init_DoesNotRequestDataFromURL() throws {
-        let anyRequest = try anyURLRequest()
-        
         let response = try anyValidDessertFeedResponse()
-        let (_, client) = try makeSUT(request: anyRequest,
-                                      result: .success(response))
+        let (_, client) = try makeSUT(result: .success(response))
         
         XCTAssertTrue(client.urlRequests.isEmpty)
     }
@@ -128,50 +112,48 @@ extension LoadDessertFeedFromServerTests {
 // MARK: - .load() Test(s)
 extension LoadDessertFeedFromServerTests {
     func test_load_RequestsDataFromURLRequest() async throws {
-        let anyRequest = try anyURLRequest()
         let response = try anyValidDessertFeedResponse()
-        let (sut, client) = try makeSUT(request: anyRequest,
-                                        result: .success(response))
+        let (sut, client) = try makeSUT(result: .success(response))
         
         let _ = try await sut.load()
         
-        XCTAssertEqual(client.urlRequests, [anyRequest])
+        let expected = [
+            DessertFeedEndpoints.getAllDesserts.urlRequest,
+        ]
+        
+        XCTAssertEqual(client.urlRequests, expected)
     }
     
     func test_load_RequestsDataFromURLRequestTwice() async throws {
-        let anyRequest = try anyURLRequest()
         let response = try anyValidDessertFeedResponse()
-        let (sut, client) = try makeSUT(request: anyRequest,
-                                        result: .success(response))
+        let (sut, client) = try makeSUT(result: .success(response))
         
         let _ = try await sut.load()
         let _ = try await sut.load()
         
-        XCTAssertEqual(client.urlRequests, [anyRequest, anyRequest])
+        let expected = [
+            DessertFeedEndpoints.getAllDesserts.urlRequest,
+            DessertFeedEndpoints.getAllDesserts.urlRequest
+        ]
+        
+        XCTAssertEqual(client.urlRequests, expected)
     }
     
     func test_load_DeliversErrorOnClientError() async throws {
-        let anyRequest = try anyURLRequest()
-        
-        let (sut, _) = try makeSUT(request: anyRequest,
-                                   result: .failure(anyNSError))
-        
+        let (sut, _) = try makeSUT(result: .failure(anyNSError))
         
         await expectErrorThrown(by: try await sut.load())
     }
     
     func test_load_DeliversErrorNon200HTTPResponse() async throws {
-        let anyRequest = try anyURLRequest()
-        
         let data = Data(count: 1)
-        let url = try XCTUnwrap(anyRequest.url)
+        let url = try XCTUnwrap(anyURLRequest().url)
         let response = try XCTUnwrap(HTTPURLResponse(url: url,
                                                      statusCode: 300,
                                                      httpVersion: nil,
                                                      headerFields: nil))
         
-        let (sut, _) = try makeSUT(request: anyRequest,
-                                   result: .success((data, response)))
+        let (sut, _) = try makeSUT(result: .success((data, response)))
         
         await expect(try await sut.load(), throws: DessertFeedItemsMapper.Error.unexpectedServerResponse)
     }
@@ -182,15 +164,12 @@ extension LoadDessertFeedFromServerTests {
         let data = try invalidJSONData()
         let response = try any200HTTPURLResponse()
         
-        let (sut, _) = try makeSUT(request: anyRequest,
-                                   result: .success((data, response)))
+        let (sut, _) = try makeSUT(result: .success((data, response)))
         
         await expect(try await sut.load(), throwsErrorOfType: Swift.DecodingError.self)
     }
     
     func test_load_DeliversNoItemsOn200HTTPResponseWithEmptyJSONList() async throws {
-        let anyRequest = try anyURLRequest()
-        
         let emptyJSONString = """
         {
             "meals": []
@@ -200,8 +179,7 @@ extension LoadDessertFeedFromServerTests {
         let data = try XCTUnwrap(emptyJSONString.data(using: .utf8))
         let response = try any200HTTPURLResponse()
         
-        let (sut, _) = try makeSUT(request: anyRequest,
-                                   result: .success((data, response)))
+        let (sut, _) = try makeSUT(result: .success((data, response)))
         
         let feedItems = try await sut.load()
         
@@ -209,8 +187,6 @@ extension LoadDessertFeedFromServerTests {
     }
     
     func test_load_DeliversItemsOn200HTTPResponseWithJSONItems() async throws {
-        let anyRequest = try anyURLRequest()
-        
         let item1 = makeItem(name: "name-1",
                              thumbnail: URL(string: "http://thumbnail-1.com")!,
                              mealID: "mealID-1")
@@ -222,8 +198,7 @@ extension LoadDessertFeedFromServerTests {
         let data = try makeItemsJSONData([item1.json, item2.json])
         let response = try any200HTTPURLResponse()
         
-        let (sut, _) = try makeSUT(request: anyRequest,
-                                   result: .success((data, response)))
+        let (sut, _) = try makeSUT(result: .success((data, response)))
         
         let feedItems = try await sut.load()
         

@@ -13,16 +13,14 @@ struct DessertFeedLoader {
         case random
     }
     
-    
     private let client: HTTPClient
     private let request: URLRequest
     
     init(
-        client: HTTPClient,
-        request: URLRequest
+        client: HTTPClient = URLSessionHTTPClient()
     ) {
         self.client = client
-        self.request = request
+        self.request = DessertFeedEndpoints.getAllDesserts.urlRequest
     }
     
     func load() async throws -> [DessertFeedItem] {
