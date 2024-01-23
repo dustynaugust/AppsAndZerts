@@ -7,15 +7,18 @@
 
 import Foundation
 
-enum URLSessionHTTPClient {
+protocol HTTPClient {
+    func makeRequest(with request: URLRequest) async throws -> (data: Data, httpURLResponse: HTTPURLResponse)
+}
+
+struct URLSessionHTTPClient: HTTPClient {
     enum Error: Swift.Error {
         case unexpectedServerError
     }
         
-    static func makeRequest() async throws -> (data: Data, httpURLResponse: HTTPURLResponse) {
-        let url = URL(string: "http://any-url.com")!
-        let request = URLRequest(url: url)
-        
+    func makeRequest(
+        with request: URLRequest
+    ) async throws -> (data: Data, httpURLResponse: HTTPURLResponse) {
         let (data, urlResponse) = try await URLSession.shared.data(for: request)
         
         guard

@@ -13,7 +13,7 @@ extension XCTestCase {
     }
     
     func successfulHTTPURLResponse() throws -> HTTPURLResponse {
-        let url = try anyURLRequest().url
+        let url = try anyURL()
         
         return try XCTUnwrap(HTTPURLResponse(url: url,
                                              statusCode: 200,
@@ -21,15 +21,18 @@ extension XCTestCase {
                                              headerFields: nil))
     }
     
-    func anyURLRequest() throws -> (url: URL, request: URLRequest) {
-        let url = try XCTUnwrap(URL(string: "http://any-url.com"))
-        let request = URLRequest(url: url)
+    func anyURL() throws -> URL {
+        try XCTUnwrap(URL(string: "http://any-url.com"))
+    }
+    
+    func anyURLRequest() throws -> URLRequest {
+        let url = try anyURL()
         
-        return (url, request)
+        return URLRequest(url: url)
     }
     
     func anyURLResponse() throws -> URLResponse {
-        let url = try anyURLRequest().url
+        let url = try anyURL()
         
         return URLResponse(url: url,
                            mimeType: nil,

@@ -28,7 +28,8 @@ extension URLSessionHTTPClientTests {
         URLProtocolStub.stub(data: nil, response: nil, error: anyNSError())
         
         do {
-            let _ = try await URLSessionHTTPClient.makeRequest()
+            let request = try anyURLRequest()
+            let _ = try await URLSessionHTTPClient().makeRequest(with: request)
             XCTFail("Expected error to be thrown.")
         } catch {
             // Success
@@ -40,7 +41,8 @@ extension URLSessionHTTPClientTests {
         URLProtocolStub.stub(data: nil, response: response, error: nil)
         
         do {
-            let _ = try await URLSessionHTTPClient.makeRequest()
+            let request = try anyURLRequest()
+            let _ = try await URLSessionHTTPClient().makeRequest(with: request)
             XCTFail("Expected error to be thrown.")
         } catch {
             XCTAssertEqual(error as? URLSessionHTTPClient.Error, .unexpectedServerError)
@@ -51,7 +53,8 @@ extension URLSessionHTTPClientTests {
         let expected = try successfulHTTPURLResponse()
         URLProtocolStub.stub(data: nil, response: expected, error: nil)
         
-        let (_, actual) = try await URLSessionHTTPClient.makeRequest()
+        let request = try anyURLRequest()
+        let (_, actual) = try await URLSessionHTTPClient().makeRequest(with: request)
         
         XCTAssertEqual(actual.statusCode, expected.statusCode)
         XCTAssertEqual(actual.url, expected.url)
@@ -63,7 +66,8 @@ extension URLSessionHTTPClientTests {
         
         URLProtocolStub.stub(data: expected, response: response, error: nil)
         
-        let (actual, _) = try await URLSessionHTTPClient.makeRequest()
+        let request = try anyURLRequest()
+        let (actual, _) = try await URLSessionHTTPClient().makeRequest(with: request)
         
         XCTAssertEqual(actual, expected)
     }
