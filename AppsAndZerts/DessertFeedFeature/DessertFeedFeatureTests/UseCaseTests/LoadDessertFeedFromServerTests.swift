@@ -32,6 +32,20 @@ final class LoadDessertFeedFromServerTests: XCTestCase {
         XCTAssertEqual(client.urlRequests, [anyRequest])
     }
     
+    func test_load_requestsDataFromURLRequestTwice() async throws {
+        let anyRequest = try anyURLRequest()
+        let client = HTTPClientSpy(data: Data(count: 666),
+                                   httpURLResponse: try successfulHTTPURLResponse())
+        
+        let sut = DessertFeedLoader(client: client,
+                                    request: anyRequest)
+        
+        try await sut.load()
+        try await sut.load()
+        
+        XCTAssertEqual(client.urlRequests, [anyRequest, anyRequest])
+    }
+    
     // MARK: - Helper(s)
     
     private struct DessertFeedLoader {
