@@ -20,6 +20,7 @@
 		3E6FB00B2B5F6EA100E5DA10 /* DessertFeedItemsMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E6FB00A2B5F6EA100E5DA10 /* DessertFeedItemsMapper.swift */; };
 		3E6FB00D2B5F943E00E5DA10 /* DessertFeedItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E6FB00C2B5F943E00E5DA10 /* DessertFeedItem.swift */; };
 		3E6FB00F2B5F949A00E5DA10 /* DessertFeedLoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E6FB00E2B5F949A00E5DA10 /* DessertFeedLoader.swift */; };
+		3E6FB0122B5F9EBB00E5DA10 /* DessertFeedEndpoints.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E6FB0112B5F9EBB00E5DA10 /* DessertFeedEndpoints.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -48,6 +49,7 @@
 		3E6FB00A2B5F6EA100E5DA10 /* DessertFeedItemsMapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DessertFeedItemsMapper.swift; sourceTree = "<group>"; };
 		3E6FB00C2B5F943E00E5DA10 /* DessertFeedItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DessertFeedItem.swift; sourceTree = "<group>"; };
 		3E6FB00E2B5F949A00E5DA10 /* DessertFeedLoader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DessertFeedLoader.swift; sourceTree = "<group>"; };
+		3E6FB0112B5F9EBB00E5DA10 /* DessertFeedEndpoints.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DessertFeedEndpoints.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -155,6 +157,7 @@
 		3E6FB0092B5F6E9000E5DA10 /* API */ = {
 			isa = PBXGroup;
 			children = (
+				3E6FB0112B5F9EBB00E5DA10 /* DessertFeedEndpoints.swift */,
 				3E6FB00A2B5F6EA100E5DA10 /* DessertFeedItemsMapper.swift */,
 			);
 			path = API;
@@ -271,6 +274,7 @@
 			files = (
 				3E40618B2B5F22A3002F9FA1 /* DessertFeed.swift in Sources */,
 				3E0C1FBA2B5F0A6A008D525A /* AppsAndZertsApp.swift in Sources */,
+				3E6FB0122B5F9EBB00E5DA10 /* DessertFeedEndpoints.swift in Sources */,
 				3E6FB00B2B5F6EA100E5DA10 /* DessertFeedItemsMapper.swift in Sources */,
 				3E6FB00D2B5F943E00E5DA10 /* DessertFeedItem.swift in Sources */,
 				3E6FB0012B5F39A700E5DA10 /* URLSessionHTTPClient.swift in Sources */,
