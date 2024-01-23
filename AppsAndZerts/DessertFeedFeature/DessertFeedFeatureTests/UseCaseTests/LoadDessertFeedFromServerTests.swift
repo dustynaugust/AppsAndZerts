@@ -9,44 +9,22 @@ import XCTest
 @testable import AppsAndZerts
 
 final class LoadDessertFeedFromServerTests: XCTestCase {
-    func test_init_doesNotRequestDataFromURL() throws {
-        let anyRequest = try anyURLRequest()
-        let client = HTTPClientSpy(data: Data(count: 666),
-                                   httpURLResponse: try successfulHTTPURLResponse())
-        let _ = DessertFeedLoader(client: client,
-                                    request: anyRequest)
-        
-        XCTAssertTrue(client.urlRequests.isEmpty)
-    }
-    
-    func test_load_requestsDataFromURLRequest() async throws {
-        let anyRequest = try anyURLRequest()
-        let client = HTTPClientSpy(data: Data(count: 666),
-                                   httpURLResponse: try successfulHTTPURLResponse())
-        
-        let sut = DessertFeedLoader(client: client,
-                                    request: anyRequest)
-        
-        try await sut.load()
-        
-        XCTAssertEqual(client.urlRequests, [anyRequest])
-    }
-    
-    func test_load_requestsDataFromURLRequestTwice() async throws {
-        let anyRequest = try anyURLRequest()
-        let client = HTTPClientSpy(data: Data(count: 666),
-                                   httpURLResponse: try successfulHTTPURLResponse())
-        
-        let sut = DessertFeedLoader(client: client,
-                                    request: anyRequest)
-        
-        try await sut.load()
-        try await sut.load()
-        
-        XCTAssertEqual(client.urlRequests, [anyRequest, anyRequest])
-    }
     
     // MARK: - Helper(s)
+    
+    private func makeSUT(
+        request: URLRequest,
+        file: StaticString = #filePath,
+        line: UInt = #line
+    ) throws -> (sut: DessertFeedLoader, client: HTTPClientSpy) {
+        let client = HTTPClientSpy(data: Data(count: 666),
+                                   httpURLResponse: try successfulHTTPURLResponse())
+        
+        let sut = DessertFeedLoader(client: client,
+                                    request: request)
+        
+        return (sut, client)
+    }
     
     private struct DessertFeedLoader {
         private let client: HTTPClient
@@ -86,8 +64,37 @@ final class LoadDessertFeedFromServerTests: XCTestCase {
             
             return response
         }
-        
-        
     }
 }
 
+// MARK: - .init(client:request:) Test(s)
+extension LoadDessertFeedFromServerTests {
+    func test_init_DoesNotRequestDataFromURL() throws {
+        let anyRequest = try anyURLRequest()
+        let (_, client) = try makeSUT(request: anyRequest)
+        
+        XCTAssertTrue(client.urlRequests.isEmpty)
+    }
+}
+
+// MARK: - .load() Test(s)
+extension LoadDessertFeedFromServerTests {
+    func test_load_RequestsDataFromURLRequest() async throws {
+        let anyRequest = try anyURLRequest()
+        let (sut, client) = try makeSUT(request: anyRequest)
+        
+        try await sut.load()
+        
+        XCTAssertEqual(client.urlRequests, [anyRequest])
+    }
+    
+    func test_load_RequestsDataFromURLRequestTwice() async throws {
+        let anyRequest = try anyURLRequest()
+        let (sut, client) = try makeSUT(request: anyRequest)
+        
+        try await sut.load()
+        try await sut.load()
+        
+        XCTAssertEqual(client.urlRequests, [anyRequest, anyRequest])
+    }
+}
