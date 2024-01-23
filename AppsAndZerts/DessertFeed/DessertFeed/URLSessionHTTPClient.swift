@@ -8,7 +8,9 @@
 import Foundation
 
 protocol HTTPClient {
-    func makeRequest(with request: URLRequest) async throws -> (data: Data, httpURLResponse: HTTPURLResponse)
+    typealias Response = (data: Data, httpURLResponse: HTTPURLResponse)
+    
+    func makeRequest(with request: URLRequest) async throws -> Response
 }
 
 struct URLSessionHTTPClient: HTTPClient {
