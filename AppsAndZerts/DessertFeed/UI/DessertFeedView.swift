@@ -8,18 +8,30 @@
 import SwiftUI
 
 class DessertFeedViewModel: ObservableObject {
-    @Published private(set) var desserts: [DessertFeedItem]
+    typealias Feed = [DessertFeedItem]
+    
+    @Published private(set) var feed: Feed
+    
+    private let resourceLoader: ResourceLoader<Feed>
     
     init() {
-        desserts = []
+        feed = []
+        
+        resourceLoader = ResourceLoader(
+            dataLoader: URLSession.shared.data(for:)
+        )
     }
     
     @MainActor
     func getFeed() async throws {
-        var result = try await DessertFeedLoader().load()
-        result.sort { $0.name < $1.name }
+        var resource = try await resourceLoader.loadResource(
+            from: DessertFeedEndpoints.getAllDesserts.urlRequest,
+            map: DessertFeedItemsMapper.map
+        )
         
-        desserts = result
+        resource.sort { $0.name < $1.name }
+        
+        feed = resource
     }
 }
 
@@ -28,12 +40,11 @@ struct DessertFeedView: View {
     
     var body: some View {
         Section {
-            List(viewModel.desserts, id: \.self) { dessert in
-                
+            List(viewModel.feed, id: \.self) { item in
                 VStack {
-                    Text(dessert.name)
-                    Text(dessert.mealID)
-                    Text(dessert.thumbnail.absoluteString)
+                    Text(item.name)
+                    Text(item.mealID)
+                    Text(item.thumbnail.absoluteString)
                 }
             }
         } header: {
@@ -50,31 +61,4 @@ struct DessertFeedView: View {
     DessertFeedView(
         viewModel: .init()
     )
-}
-
-
-
-struct ViewFirstAppearModifier: ViewModifier {
-    ///State keeps it's value when view is changed
-    @State private var didAppear = false
-    private let action: (() -> Void)
-    
-    init(perform action: @escaping (() -> Void)) {
-        self.action = action
-    }
-    
-    func body(content: Content) -> some View {
-        content.onAppear {
-            guard !didAppear else { return }
-            
-            didAppear = true
-            action()
-        }
-    }
-}
-
-extension View {
-    func onFirstAppear(perform action: @escaping (() -> Void)) -> some View {
-        modifier(ViewFirstAppearModifier(perform: action))
-    }
 }

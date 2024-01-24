@@ -7,9 +7,6 @@
 
 import Foundation
 
-
-
-
 final class DessertFeedItemsMapper {
     public enum Error: Swift.Error {
         case unexpectedServerResponse
