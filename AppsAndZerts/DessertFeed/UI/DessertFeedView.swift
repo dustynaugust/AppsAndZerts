@@ -12,6 +12,8 @@ class DessertFeedViewModel: ObservableObject {
     
     @Published private(set) var feed: Feed
     
+    var isLoading: Bool { feed.isEmpty }
+    
     private let resourceLoader: ResourceLoader<Feed>
     
     init() {
@@ -39,19 +41,26 @@ struct DessertFeedView: View {
     @ObservedObject private(set) var viewModel: DessertFeedViewModel
     
     var body: some View {
-        Section {
-            List(viewModel.feed, id: \.self) { item in
-                VStack {
-                    Text(item.name)
-                    Text(item.mealID)
-                    Text(item.thumbnail.absoluteString)
+        
+        ZStack {
+            Section {
+                List(viewModel.feed, id: \.self) { item in
+                    VStack {
+                        Text(item.name)
+                        Text(item.mealID)
+                        Text(item.thumbnail.absoluteString)
+                    }
                 }
+            } header: {
+                Text("Desserts")
             }
-        } header: {
-            Text("Desserts")
-        }
-        .onFirstAppear {
-            Task { try? await viewModel.getFeed() }
+            .onFirstAppear {
+                // Worth noting this doesn't necessarily support cancellation
+                Task { try? await viewModel.getFeed() }
+            }
+            
+            ProgressView()
+                .opacity(viewModel.isLoading ? 1 : 0)
         }
     }
 }
