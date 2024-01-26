@@ -17,12 +17,11 @@ class DessertFeedViewModel: ObservableObject {
     }
     
     @Published private(set) var feedState: FeedState {
-        willSet {
-            showingAlert = newValue == .error
-        }
+        willSet { showingAlert = newValue == .error }
     }
     
     @Published var showingAlert = false
+    private let resourceLoader: ResourceLoader<Feed>
     
     var isLoading: Bool { feedState == .loading }
     
@@ -36,8 +35,6 @@ class DessertFeedViewModel: ObservableObject {
             return feed
         }
     }
-    
-    private let resourceLoader: ResourceLoader<Feed>
     
     init() {
         feedState = .loading

@@ -29,30 +29,6 @@ final class LoadDessertFeedFromServerTests: XCTestCase {
     
     // MARK: - Helper(s)
     
-    private func anyValidDessertFeedResponse() throws -> URLSessionProtocol.Response {
-        let jsonString = """
-        {
-            "meals": [
-                {
-                    "strMeal": "Apam balik",
-                    "strMealThumb": "https://www.themealdb.com/images/media/meals/adxcbq1619787919.jpg",
-                    "idMeal": "53049"
-                },
-                {
-                    "strMeal": "Banana Pancakes",
-                    "strMealThumb": "https://www.themealdb.com/images/media/meals/sywswr1511383814.jpg",
-                    "idMeal": "52855"
-                },
-            ]
-        }
-        """
-        
-        let jsonData = try XCTUnwrap(jsonString.data(using: .utf8))
-        let successfulHTTPURLResponse = try any200HTTPURLResponse()
-        
-        return (jsonData, successfulHTTPURLResponse)
-    }
-    
     private func makeItem(
         name: String,
         thumbnail: URL,
@@ -92,7 +68,7 @@ final class LoadDessertFeedFromServerTests: XCTestCase {
         
         func data(
             for request: URLRequest
-        ) async throws -> (Data, URLResponse) {
+        ) async throws -> Response {
             urlRequests.append(request)
             
             return try result.get()

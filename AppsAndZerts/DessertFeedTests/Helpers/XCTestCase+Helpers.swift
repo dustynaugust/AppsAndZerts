@@ -7,10 +7,10 @@
 
 import XCTest
 
-/// A generic Error.
+// MARK: - Generic Helpers
+
 var anyError: Swift.Error { anyNSError }
 
-/// A generic NSError.
 var anyNSError: NSError { NSError(domain: "any error", code: 0) }
 
 func anyURL() throws -> URL {
@@ -43,4 +43,34 @@ func any200HTTPURLResponse() throws -> HTTPURLResponse {
 
 func invalidJSONData() throws -> Data {
     try XCTUnwrap("Definitely Not JSON!".data(using: .utf8))
+}
+
+// MARK: - AppsAndZerts Specific Helpers
+
+@testable import AppsAndZerts
+
+func anyValidDessertFeedJSON() -> String {
+    """
+    {
+        "meals": [
+            {
+                "strMeal": "Apam balik",
+                "strMealThumb": "https://www.themealdb.com/images/media/meals/adxcbq1619787919.jpg",
+                "idMeal": "53049"
+            },
+            {
+                "strMeal": "Banana Pancakes",
+                "strMealThumb": "https://www.themealdb.com/images/media/meals/sywswr1511383814.jpg",
+                "idMeal": "52855"
+            },
+        ]
+    }
+    """
+}
+
+func anyValidDessertFeedResponse() throws -> URLSessionProtocol.Response {
+    let jsonData = try XCTUnwrap(anyValidDessertFeedJSON().data(using: .utf8))
+    let successfulHTTPURLResponse = try any200HTTPURLResponse()
+    
+    return (jsonData, successfulHTTPURLResponse)
 }
