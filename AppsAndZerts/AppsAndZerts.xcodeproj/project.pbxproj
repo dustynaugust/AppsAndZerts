@@ -24,6 +24,14 @@
 		3E6FB01C2B61CF7A00E5DA10 /* OnFirstAppear.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E6FB01B2B61CF7A00E5DA10 /* OnFirstAppear.swift */; };
 		3E6FB01F2B61F2CD00E5DA10 /* DessertFeedViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E6FB01E2B61F2CD00E5DA10 /* DessertFeedViewModel.swift */; };
 		3E8115252B64436D000DD64A /* DessertFeedViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E8115232B64434A000DD64A /* DessertFeedViewModelTests.swift */; };
+		3ED8756D2B64612E00B42953 /* LoadDessertDetailsFromServerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3ED8756C2B64612E00B42953 /* LoadDessertDetailsFromServerTests.swift */; };
+		3ED8756F2B64625600B42953 /* HTTPClientSpy.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3ED8756E2B64625600B42953 /* HTTPClientSpy.swift */; };
+		3ED875752B64E60A00B42953 /* DessertDetailsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3ED875732B64E2DC00B42953 /* DessertDetailsViewModel.swift */; };
+		3ED875762B64E60A00B42953 /* DessertDetailsScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3ED875712B64E2CB00B42953 /* DessertDetailsScreen.swift */; };
+		3ED8757B2B64FE4100B42953 /* DessertDetailsItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3ED875792B64FE2A00B42953 /* DessertDetailsItem.swift */; };
+		3ED8757C2B64FE4500B42953 /* DynamicCodingKeys.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3ED875772B64FE0D00B42953 /* DynamicCodingKeys.swift */; };
+		3ED8757E2B64FE5900B42953 /* Ingredient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3ED8757D2B64FE5900B42953 /* Ingredient.swift */; };
+		3ED875802B64FE6C00B42953 /* DessertDetailsItemMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3ED8757F2B64FE6C00B42953 /* DessertDetailsItemMapper.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -56,6 +64,14 @@
 		3E6FB01B2B61CF7A00E5DA10 /* OnFirstAppear.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnFirstAppear.swift; sourceTree = "<group>"; };
 		3E6FB01E2B61F2CD00E5DA10 /* DessertFeedViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DessertFeedViewModel.swift; sourceTree = "<group>"; };
 		3E8115232B64434A000DD64A /* DessertFeedViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DessertFeedViewModelTests.swift; sourceTree = "<group>"; };
+		3ED8756C2B64612E00B42953 /* LoadDessertDetailsFromServerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoadDessertDetailsFromServerTests.swift; sourceTree = "<group>"; };
+		3ED8756E2B64625600B42953 /* HTTPClientSpy.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HTTPClientSpy.swift; sourceTree = "<group>"; };
+		3ED875712B64E2CB00B42953 /* DessertDetailsScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DessertDetailsScreen.swift; sourceTree = "<group>"; };
+		3ED875732B64E2DC00B42953 /* DessertDetailsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DessertDetailsViewModel.swift; sourceTree = "<group>"; };
+		3ED875772B64FE0D00B42953 /* DynamicCodingKeys.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DynamicCodingKeys.swift; sourceTree = "<group>"; };
+		3ED875792B64FE2A00B42953 /* DessertDetailsItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DessertDetailsItem.swift; sourceTree = "<group>"; };
+		3ED8757D2B64FE5900B42953 /* Ingredient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Ingredient.swift; sourceTree = "<group>"; };
+		3ED8757F2B64FE6C00B42953 /* DessertDetailsItemMapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DessertDetailsItemMapper.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -138,9 +154,10 @@
 		3E6FAFF92B5F384100E5DA10 /* Helpers */ = {
 			isa = PBXGroup;
 			children = (
-				3E6FAFFA2B5F38D100E5DA10 /* XCTestCase+Helpers.swift */,
+				3ED8756E2B64625600B42953 /* HTTPClientSpy.swift */,
 				3E6FAFFD2B5F393C00E5DA10 /* URLProtocolStub.swift */,
 				3E6FB0062B5F621500E5DA10 /* XCTestCase+Error.swift */,
+				3E6FAFFA2B5F38D100E5DA10 /* XCTestCase+Helpers.swift */,
 			);
 			path = Helpers;
 			sourceTree = "<group>";
@@ -148,6 +165,7 @@
 		3E6FB0052B5F3C4E00E5DA10 /* UseCaseTests */ = {
 			isa = PBXGroup;
 			children = (
+				3ED8756C2B64612E00B42953 /* LoadDessertDetailsFromServerTests.swift */,
 				3E6FB0022B5F3B6900E5DA10 /* LoadDessertFeedFromServerTests.swift */,
 			);
 			path = UseCaseTests;
@@ -158,6 +176,7 @@
 			children = (
 				3E6FB0112B5F9EBB00E5DA10 /* DessertFeedEndpoints.swift */,
 				3E6FB00A2B5F6EA100E5DA10 /* DessertFeedItemsMapper.swift */,
+				3ED8757F2B64FE6C00B42953 /* DessertDetailsItemMapper.swift */,
 			);
 			path = API;
 			sourceTree = "<group>";
@@ -165,7 +184,9 @@
 		3E6FB0102B5F970900E5DA10 /* Models */ = {
 			isa = PBXGroup;
 			children = (
+				3ED875792B64FE2A00B42953 /* DessertDetailsItem.swift */,
 				3E6FB00C2B5F943E00E5DA10 /* DessertFeedItem.swift */,
+				3ED8757D2B64FE5900B42953 /* Ingredient.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -173,6 +194,7 @@
 		3E6FB0132B5F9F2D00E5DA10 /* UI */ = {
 			isa = PBXGroup;
 			children = (
+				3ED875702B64E2BB00B42953 /* DessertDetails */,
 				3E6FB01D2B61F2A200E5DA10 /* DessertFeed */,
 			);
 			path = UI;
@@ -181,8 +203,9 @@
 		3E6FB0142B5FA04800E5DA10 /* Shared */ = {
 			isa = PBXGroup;
 			children = (
-				3E6FB01A2B61CF5E00E5DA10 /* ViewModifiers */,
+				3ED875772B64FE0D00B42953 /* DynamicCodingKeys.swift */,
 				3E6FB0152B5FA04E00E5DA10 /* API */,
+				3E6FB01A2B61CF5E00E5DA10 /* ViewModifiers */,
 			);
 			path = Shared;
 			sourceTree = "<group>";
@@ -243,6 +266,15 @@
 				3E8115232B64434A000DD64A /* DessertFeedViewModelTests.swift */,
 			);
 			path = DessertFeed;
+			sourceTree = "<group>";
+		};
+		3ED875702B64E2BB00B42953 /* DessertDetails */ = {
+			isa = PBXGroup;
+			children = (
+				3ED875712B64E2CB00B42953 /* DessertDetailsScreen.swift */,
+				3ED875732B64E2DC00B42953 /* DessertDetailsViewModel.swift */,
+			);
+			path = DessertDetails;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -346,7 +378,12 @@
 			buildActionMask = 2147483647;
 			files = (
 				3E40618B2B5F22A3002F9FA1 /* DessertFeedScreen.swift in Sources */,
+				3ED875762B64E60A00B42953 /* DessertDetailsScreen.swift in Sources */,
+				3ED875802B64FE6C00B42953 /* DessertDetailsItemMapper.swift in Sources */,
+				3ED8757E2B64FE5900B42953 /* Ingredient.swift in Sources */,
+				3ED8757B2B64FE4100B42953 /* DessertDetailsItem.swift in Sources */,
 				3E0C1FBA2B5F0A6A008D525A /* AppsAndZertsApp.swift in Sources */,
+				3ED875752B64E60A00B42953 /* DessertDetailsViewModel.swift in Sources */,
 				3E6FB0122B5F9EBB00E5DA10 /* DessertFeedEndpoints.swift in Sources */,
 				3E6FB00B2B5F6EA100E5DA10 /* DessertFeedItemsMapper.swift in Sources */,
 				3E6FB01C2B61CF7A00E5DA10 /* OnFirstAppear.swift in Sources */,
@@ -354,6 +391,7 @@
 				3E6FB01F2B61F2CD00E5DA10 /* DessertFeedViewModel.swift in Sources */,
 				3E6FB00D2B5F943E00E5DA10 /* DessertFeedItem.swift in Sources */,
 				3E6FB0012B5F39A700E5DA10 /* ResourceLoader.swift in Sources */,
+				3ED8757C2B64FE4500B42953 /* DynamicCodingKeys.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -365,6 +403,8 @@
 				3E6FAFFF2B5F395900E5DA10 /* URLProtocolStub.swift in Sources */,
 				3E4061902B5F2453002F9FA1 /* ResourceLoaderTests.swift in Sources */,
 				3E6FB0082B5F622000E5DA10 /* XCTestCase+Error.swift in Sources */,
+				3ED8756D2B64612E00B42953 /* LoadDessertDetailsFromServerTests.swift in Sources */,
+				3ED8756F2B64625600B42953 /* HTTPClientSpy.swift in Sources */,
 				3E6FB0042B5F3B7B00E5DA10 /* LoadDessertFeedFromServerTests.swift in Sources */,
 				3E8115252B64436D000DD64A /* DessertFeedViewModelTests.swift in Sources */,
 			);

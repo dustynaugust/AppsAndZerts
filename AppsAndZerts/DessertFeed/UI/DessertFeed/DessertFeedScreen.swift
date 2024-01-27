@@ -11,22 +11,17 @@ struct DessertFeedScreen: View {
     @ObservedObject private(set) var viewModel: DessertFeedViewModel
     
     var body: some View {
-        Section {
+        NavigationSplitView {
             ZStack {
-                
-                List(viewModel.feed, id: \.self) { item in
-                    VStack {
-                        Text(item.name)
-                        Text(item.mealID)
-                        Text(item.thumbnail.absoluteString)
-                    }
-                }
+                DessertFeed(feed: viewModel.feed)
                 
                 ProgressView()
                     .opacity(viewModel.isLoading ? 1 : 0)
             }
-        } header: {
-            Label("Desserts", systemImage: "birthday.cake")
+            .navigationTitle("Desserts")
+            
+        } detail: {
+            Label("Woo, Desserts!", systemImage: "birthday.cake")
         }
         .onFirstAppear {
             // Worth noting this doesn't necessarily support cancellation
@@ -35,6 +30,27 @@ struct DessertFeedScreen: View {
         .alert("Failed to retrieve desserts", isPresented: $viewModel.showingAlert) {
             Button("Reload", role: .cancel) {
                 Task { await viewModel.getFeed() }
+            }
+        }
+    }
+    
+    private struct DessertFeed: View {
+        let feed: [DessertFeedItem]
+        
+        var body: some View {
+            List(feed, id: \.self) { item in
+                NavigationLink {
+                    DessertDetailsScreen(
+                        viewModel: .init(mealID: item.mealID)
+                    )
+                    
+                } label: {
+                    HStack {
+                        Text(item.name)
+                        
+                        Spacer()
+                    }
+                }
             }
         }
     }
