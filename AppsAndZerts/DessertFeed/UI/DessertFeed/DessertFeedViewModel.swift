@@ -16,7 +16,7 @@ class DessertFeedViewModel: ObservableObject {
         case error
     }
     
-    @Published private(set) var feedState: FeedState {
+    private(set) var feedState: FeedState {
         willSet { showingAlert = newValue == .error }
     }
     

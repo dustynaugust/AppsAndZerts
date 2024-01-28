@@ -31,7 +31,7 @@ enum DessertFeedEndpoints {
             components.queryItems = [URLQueryItem(name: "c", value: "Dessert")]
         
         case let .get(mealID):
-            components.path = baseURL.path + "lookup.php"
+            components.path = baseURL.path + "/lookup.php"
             components.queryItems = [URLQueryItem(name: "i", value: "\(mealID)")]
         }
         

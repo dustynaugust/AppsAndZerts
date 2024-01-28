@@ -53,27 +53,6 @@ final class LoadDessertFeedFromServerTests: XCTestCase {
         let itemsJSON = ["meals": items]
         return try JSONSerialization.data(withJSONObject: itemsJSON)
     }
-    
-    private class HTTPClientSpy: URLSessionProtocol {
-        typealias Result = Swift.Result<Response, Error>
-        
-        private let result: Result
-        private(set) var urlRequests = [URLRequest]()
-        
-        init(
-            result: Result
-        ) {
-            self.result = result
-        }
-        
-        func data(
-            for request: URLRequest
-        ) async throws -> Response {
-            urlRequests.append(request)
-            
-            return try result.get()
-        }
-    }
 }
 
 // MARK: - .init(client:request:) Test(s)
@@ -191,13 +170,17 @@ extension LoadDessertFeedFromServerTests {
     }
     
     func test_load_DeliversItemsOn200HTTPResponseWithJSONItems() async throws {
-        let item1 = makeItem(name: "name-1",
-                             thumbnail: URL(string: "http://thumbnail-1.com")!,
-                             mealID: "mealID-1")
-        let item2 = makeItem(name: "name-2",
-                             thumbnail: URL(string: "http://thumbnail-2.com")!,
-                             mealID: "mealID-2")
+        let item1 = makeItem(
+            name: "name-1",
+            thumbnail: URL(string: "http://thumbnail-1.com")!,
+            mealID: "mealID-1"
+        )
         
+        let item2 = makeItem(
+            name: "name-2",
+            thumbnail: URL(string: "http://thumbnail-2.com")!,
+            mealID: "mealID-2"
+        )
         
         let data = try makeItemsJSONData([item1.json, item2.json])
         let response = try any200HTTPURLResponse()

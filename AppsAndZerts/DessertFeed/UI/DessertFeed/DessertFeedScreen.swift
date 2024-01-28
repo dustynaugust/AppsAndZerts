@@ -11,22 +11,17 @@ struct DessertFeedScreen: View {
     @ObservedObject private(set) var viewModel: DessertFeedViewModel
     
     var body: some View {
-        Section {
+        NavigationSplitView {
             ZStack {
-                
-                List(viewModel.feed, id: \.self) { item in
-                    VStack {
-                        Text(item.name)
-                        Text(item.mealID)
-                        Text(item.thumbnail.absoluteString)
-                    }
-                }
+                DessertFeed(feed: viewModel.feed)
                 
                 ProgressView()
                     .opacity(viewModel.isLoading ? 1 : 0)
             }
-        } header: {
-            Label("Desserts", systemImage: "birthday.cake")
+            .navigationTitle("Desserts")
+            
+        } detail: {
+            Label("Woo, Desserts!", systemImage: "birthday.cake")
         }
         .onFirstAppear {
             // Worth noting this doesn't necessarily support cancellation
@@ -38,11 +33,51 @@ struct DessertFeedScreen: View {
             }
         }
     }
+    
+    private struct DessertFeed: View {
+        let feed: [DessertFeedItem]
+        
+        var body: some View {
+            List(feed, id: \.self) { item in
+                NavigationLink {
+                    DessertDetailsScreen(
+                        viewModel: .init(mealID: item.mealID)
+                    )
+                    
+                } label: {
+                    DessertRow(
+                        name: item.name,
+                        thumbnail: item.thumbnail
+                    )
+                }
+            }
+        }
+    }
+    
+    private struct DessertRow: View {
+        let name: String
+        let thumbnail: URL
+        
+        var body: some View {
+            HStack {
+                AsyncImage(url: thumbnail) { image in
+                    image.resizable()
+                } placeholder: {
+                    ProgressView()
+                }
+                .frame(width: 50, height: 50)
+                
+                Text(name)
+                
+                Spacer()
+            }
+        }
+    }
 }
 
 // FIXME: Would be nice to not hit the endpoint here
-//#Preview {
-//    DessertFeedScreen(
-//        viewModel: .init()
-//    )
-//}
+#Preview {
+    DessertFeedScreen(
+        viewModel: .init()
+    )
+}
