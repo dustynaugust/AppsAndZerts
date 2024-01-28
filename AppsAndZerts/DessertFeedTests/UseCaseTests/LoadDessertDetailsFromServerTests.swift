@@ -34,10 +34,9 @@ final class LoadDessertDetailsFromServerTests: XCTestCase {
         dateModified: String?,
         drinkAlternate: String?,
         imageSource: String?,
-        ingredients: [String],
+        ingredients: [Ingredient],
         instructions: String,
         mealID: String,
-        measurements: [String],
         name: String,
         source: URL,
         tags: String?,
@@ -54,7 +53,6 @@ final class LoadDessertDetailsFromServerTests: XCTestCase {
             ingredients: ingredients,
             instructions: instructions,
             mealID: mealID,
-            measurements: measurements,
             name: name,
             source: source,
             tags: tags,
@@ -62,7 +60,6 @@ final class LoadDessertDetailsFromServerTests: XCTestCase {
             youtubeURL: youtubeURL
         )
             
-        
         var json = [
             "idMeal": item.mealID,
             "strMeal": item.name,
@@ -70,21 +67,18 @@ final class LoadDessertDetailsFromServerTests: XCTestCase {
             "strCategory": item.category,
             "strArea": item.area,
             "strInstructions": item.instructions,
-            "strMealThumb": item.thumbnailURL.absoluteString,
+            "strMealThumb": item.thumbnailURL?.absoluteString ?? "null",
             "strTags": item.tags ?? "null",
-            "strYoutube": item.youtubeURL.absoluteString,
-            "strSource": item.source.absoluteString,
+            "strYoutube": item.youtubeURL?.absoluteString ?? "null",
+            "strSource": item.source?.absoluteString ?? "null",
             "strImageSource": item.imageSource,
             "strCreativeCommonsConfirmed": item.creativeCommonsConfirmed,
             "dateModified": item.dateModified
         ]
         
         for (index, ingredient) in ingredients.enumerated() {
-            json["strIngredient\(index + 1)"] = ingredient
-        }
-        
-        for (index, measurement) in measurements.enumerated() {
-            json["strMeasure\(index + 1)"] = measurement
+            json["strIngredient\(index + 1)"] = ingredient.name
+            json["strMeasure\(index + 1)"] = ingredient.measurement
         }
         
         return (item, json.compactMapValues { $0 })
@@ -223,10 +217,13 @@ extension LoadDessertDetailsFromServerTests {
             dateModified: "dateModified-1",
             drinkAlternate: "drinkAlternate-1",
             imageSource: "imageSource-1",
-            ingredients: ["strIngredient1-1", "strIngredient1-2", "strIngredient1-3"],
+            ingredients: [
+                Ingredient(name: "ingredient1-1", measurement: "measurement1-1"),
+                Ingredient(name: "ingredient1-2", measurement: "measurement1-2"),
+                Ingredient(name: "ingredient1-3", measurement: "measurement1-3")
+            ],
             instructions: "instructions-1",
             mealID: "mealID-1",
-            measurements: ["strMeasure1-1", "strMeasure1-2", "strMeasure1-3"],
             name: "name-1",
             source: URL(string: "http://source-1.com")!,
             tags: "tags-1",
@@ -241,10 +238,13 @@ extension LoadDessertDetailsFromServerTests {
             dateModified: "dateModified-2",
             drinkAlternate: "drinkAlternate-2",
             imageSource: "imageSource-2",
-            ingredients: ["ingredient2-1", "ingredient2-2", "ingredient2-3"],
+            ingredients: [
+                Ingredient(name: "ingredient2-1", measurement: "measurement2-1"),
+                Ingredient(name: "ingredient2-2", measurement: "measurement2-2"),
+                Ingredient(name: "ingredient2-3", measurement: "measurement2-3")
+            ],
             instructions: "instructions-2",
             mealID: "mealID-2",
-            measurements: ["measurement2-1", "measurement2-2", "measurement2-3"],
             name: "name-2",
             source: URL(string: "http://source-2.com")!,
             tags: "tags-2",
