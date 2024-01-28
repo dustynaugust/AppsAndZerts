@@ -263,14 +263,5 @@ extension LoadDessertDetailsFromServerTests {
         )
         
         XCTAssertEqual(detailItem, item1.model)
-        
     }
 }
-
-/*
- XCTAssertEqual failed:
- ("DessertDetailsItem(area: "area-1", category: "category-1", creativeCommonsConfirmed: Optional("creativeCommonsConfirmed-1"), dateModified: Optional("dateModified-1"), drinkAlternate: Optional("drinkAlternate-1"), imageSource: Optional("imageSource-1"), ingredients: ["strIngredient1-2", "strIngredient1-1", "strIngredient1-3"], instructions: "instructions-1", mealID: "mealID-1", measurements: ["strMeasure1-2", "strMeasure1-3", "strMeasure1-1"], name: "name-1", source: http://source-1.com, tags: Optional("tags-1"), thumbnailURL: http://thumbnail-1.com, youtubeURL: http://youtube-1.com)")
- 
- is not equal to
- ("DessertDetailsItem(area: "area-1", category: "category-1", creativeCommonsConfirmed: Optional("creativeCommonsConfirmed-1"), dateModified: Optional("dateModified-1"), drinkAlternate: Optional("drinkAlternate-1"), imageSource: Optional("imageSource-1"), ingredients: ["strIngredient1-1", "strIngredient1-2", "strIngredient1-3"], instructions: "instructions-1", mealID: "mealID-1", measurements: ["strMeasure1-1", "strMeasure1-2", "strMeasure1-3"], name: "name-1", source: http://source-1.com, tags: Optional("tags-1"), thumbnailURL: http://thumbnail-1.com, youtubeURL: http://youtube-1.com)")
- */

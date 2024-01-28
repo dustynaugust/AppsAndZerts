@@ -45,20 +45,39 @@ struct DessertFeedScreen: View {
                     )
                     
                 } label: {
-                    HStack {
-                        Text(item.name)
-                        
-                        Spacer()
-                    }
+                    DessertRow(
+                        name: item.name,
+                        thumbnail: item.thumbnail
+                    )
                 }
+            }
+        }
+    }
+    
+    private struct DessertRow: View {
+        let name: String
+        let thumbnail: URL
+        
+        var body: some View {
+            HStack {
+                AsyncImage(url: thumbnail) { image in
+                    image.resizable()
+                } placeholder: {
+                    ProgressView()
+                }
+                .frame(width: 50, height: 50)
+                
+                Text(name)
+                
+                Spacer()
             }
         }
     }
 }
 
 // FIXME: Would be nice to not hit the endpoint here
-//#Preview {
-//    DessertFeedScreen(
-//        viewModel: .init()
-//    )
-//}
+#Preview {
+    DessertFeedScreen(
+        viewModel: .init()
+    )
+}

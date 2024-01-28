@@ -14,19 +14,24 @@ struct DessertDetailsScreen: View {
     
     var body: some View {
         ZStack {
-            if case let .loaded(detailsItem) = viewModel.state {
+            if case let .loaded(item) = viewModel.state {
                 
-                VStack(alignment: .leading) {
-                    Section {
-                        IngredientList(ingredients: detailsItem.ingredients)
-                        
-                    } header: {
-                        Header(text: detailsItem.name)
-                        
-                    } footer: {
-                        Footer(text: detailsItem.instructions)
+                ScrollView { 
+                    VStack {
+                        Section {
+                            DessertContent(
+                                ingredients: item.ingredients,
+                                instructions: item.instructions
+                            )
+                            
+                        } header: {
+                            Header(
+                                text: item.name,
+                                thumbnail: item.thumbnailURL ?? URL(string: "")!
+                            )
+                        }
+                        .padding(.top)
                     }
-                    .padding(.top)
                 }
             }
             
@@ -45,8 +50,18 @@ struct DessertDetailsScreen: View {
     
     private struct Header: View {
         let text: String
+        let thumbnail: URL
         
         var body: some View {
+            AsyncImage(url: thumbnail) { image in
+                image
+                    .resizable()
+                
+            } placeholder: {
+                ProgressView()
+            }
+            .frame(height: 300)
+            
             Text(text)
                 .font(.title)
                 .padding(.horizontal)
@@ -55,14 +70,46 @@ struct DessertDetailsScreen: View {
         }
     }
     
-    private struct IngredientList: View {
+    private struct DessertContent: View {
         let ingredients: [Ingredient]
+        let instructions: String
         
         var body: some View {
-            List(ingredients, id: \.self) {
-                IngredientRow(name: $0.name, measurement: $0.measurement )
+            VStack {
+                
+                LeadingTitleText(text: "Ingredients:")
+                    .padding(.bottom)
+                    
+                ForEach(ingredients, id: \.self) {
+                    IngredientRow(
+                        name: $0.name,
+                        measurement: $0.measurement
+                    )
+                }
+                
+                Divider()
+                    .padding(.vertical)
+                
+                LeadingTitleText(text: "Instructions:")
+                    .padding(.bottom)
+                
+                Text(instructions)
+                    .padding(.horizontal)
             }
-            .listStyle(.plain)
+        }
+    }
+    
+    private struct LeadingTitleText: View {
+        let text: String
+        
+        var body: some View {
+            Text(text)
+                .font(.title2)
+                .frame(
+                    maxWidth: .infinity,
+                    alignment: .leading
+                )
+                .padding(.horizontal)
         }
     }
     
@@ -78,26 +125,14 @@ struct DessertDetailsScreen: View {
                 
                 Text(measurement.capitalized)
             }
-        }
-    }
-    
-    private struct Footer: View {
-        let text: String
-        
-        var body: some View {
-            Divider()
-            
-            ScrollView {
-                Text(text)
-                    .padding(.horizontal)
-            }
+            .padding(.horizontal)
         }
     }
 }
 
 // FIXME: Would be nice to not hit the endpoint here
-//#Preview {
-//    DessertDetailsScreen(
-//        viewModel: .init(mealID: "52855")
-//    )
-//}
+#Preview {
+    DessertDetailsScreen(
+        viewModel: .init(mealID: "52855")
+    )
+}
