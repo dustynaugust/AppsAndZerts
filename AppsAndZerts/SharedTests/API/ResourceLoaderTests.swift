@@ -6,6 +6,7 @@
 //
 
 import XCTest
+
 @testable import AppsAndZerts
 
 final class ResourceLoaderTests: XCTestCase {
@@ -30,7 +31,7 @@ final class ResourceLoaderTests: XCTestCase {
 // MARK: - .makeRequest() Test(s)
 extension ResourceLoaderTests {
     func test_loadResource_FailsOnError() async throws {
-        URLProtocolStub.stub(data: nil, response: nil, error: anyNSError)
+        URLProtocolStub.stub(data: nil, response: try any200HTTPURLResponse(), error: anyNSError)
         
         let request = try anyURLRequest()
         
@@ -44,7 +45,6 @@ extension ResourceLoaderTests {
     
     func test_loadResource_ThrowsUnexpectedServerError_WhenUnexpectedResponseRecieved() async throws {
         let nonHTTPURL = try XCTUnwrap(URL(string: "not-http://any-url.com"))
-        
         
         let nonHTTPURLResponse = URLResponse(url: nonHTTPURL,
                                              mimeType: nil,
