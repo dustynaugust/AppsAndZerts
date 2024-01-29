@@ -1,16 +1,16 @@
 //
-//  DessertFeedViewModelTests.swift
-//  AppsAndZerts
+//  DessertDetailsViewModelTests.swift
+//  AppsAndZertsTests
 //
-//  Created by Dustyn August on 1/26/24.
+//  Created by Dustyn August on 1/28/24.
 //
 
 import XCTest
 
 @testable import AppsAndZerts
 
-final class DessertFeedViewModelTests: XCTestCase {
-    private typealias Resource = (Data, HTTPURLResponse)
+final class DessertDetailsViewModelTests: XCTestCase {
+    private let anyMealID = "any-meal-ID"
         
     override func setUp() {
         super.setUp()
@@ -26,18 +26,19 @@ final class DessertFeedViewModelTests: XCTestCase {
 }
 
 // MARK: - .init() Test(s)
-extension DessertFeedViewModelTests {
+extension DessertDetailsViewModelTests {
     func test_init_DoesNotLoadDesserts() {
-        let sut = DessertFeedViewModel()
+        let sut = DessertDetailsViewModel(mealID: anyMealID)
         
-        XCTAssertTrue(sut.feed.isEmpty)
+        XCTAssertTrue(sut.isLoading)
+        XCTAssertEqual(sut.state, .loading)
     }
 }
 
 // MARK: - .getFeed() Test(s)
-extension DessertFeedViewModelTests {
+extension DessertDetailsViewModelTests {
     func test_getFeed_WhenSuccess() async throws {
-        let response = try anyValidDessertFeedResponse()
+        let response = try anyValidDessertDetailsResponse()
         
         URLProtocolStub.stub(
             data: response.data,
@@ -45,16 +46,14 @@ extension DessertFeedViewModelTests {
             error: nil
         )
         
-        let sut = DessertFeedViewModel()
+        let sut = DessertDetailsViewModel(mealID: anyMealID)
         
-        await sut.getFeed()
+        await sut.getDetails()
         
-        XCTAssertTrue(!sut.feed.isEmpty)
-        
-        guard 
-            case .loaded = sut.feedState
+        guard
+            case .loaded = sut.state
         else {
-            XCTFail("Expected \(String(describing: DessertFeedViewModel.FeedState.loaded)) got \(sut.feedState)")
+            XCTFail("Expected \(String(describing: DessertDetailsViewModel.State.loaded)) got \(sut.state)")
             return
         }
     }
@@ -66,12 +65,11 @@ extension DessertFeedViewModelTests {
             error: anyError
         )
         
-        let sut = DessertFeedViewModel()
+        let sut = DessertDetailsViewModel(mealID: anyMealID)
         
-        await sut.getFeed()
+        await sut.getDetails()
         
-        XCTAssertTrue(sut.feed.isEmpty)
-        XCTAssertEqual(sut.feedState, .error)
+        XCTAssertEqual(sut.state, .error)
         XCTAssertTrue(sut.showingAlert)
     }
 }
