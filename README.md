@@ -1,5 +1,5 @@
 # AppsAndZerts
-Display a list of desserts from .
+Display a list of desserts from https://themealdb.com/api.php.
 
 
 ## Dessert Feed Feature
