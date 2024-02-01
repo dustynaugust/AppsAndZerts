@@ -11,9 +11,7 @@ import SwiftUI
 struct AppsAndZertsApp: App {
     var body: some Scene {
         WindowGroup {
-            DessertFeedScreen(
-                viewModel: .init()
-            )
+           MainView()
         }
     }
 }
