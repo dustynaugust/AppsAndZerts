@@ -62,6 +62,7 @@ struct FeedScreen: View {
             HStack {
                 AsyncImage(url: thumbnail) { image in
                     image.resizable()
+                    
                 } placeholder: {
                     ProgressView()
                 }

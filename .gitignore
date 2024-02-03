@@ -1,5 +1,6 @@
 .DS_Store
 **/.DS_Store
+.swiftpm
 
 # Created by https://www.toptal.com/developers/gitignore/api/swift,swiftpackagemanager,swiftpm,objective-c
 # Edit at https://www.toptal.com/developers/gitignore?templates=swift,swiftpackagemanager,swiftpm,objective-c

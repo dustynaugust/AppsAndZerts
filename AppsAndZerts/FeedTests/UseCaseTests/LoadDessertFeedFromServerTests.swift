@@ -5,6 +5,8 @@
 //  Created by Dustyn August on 1/22/24.
 //
 
+import HTTPService
+import TestHelpers
 import XCTest
 
 @testable import AppsAndZerts
@@ -19,10 +21,9 @@ final class LoadDessertFeedFromServerTests: XCTestCase {
         result: HTTPClientSpy.Result,
         file: StaticString = #filePath,
         line: UInt = #line
-    ) throws -> (sut: ResourceLoader<[FeedItem]>, client: HTTPClientSpy) {
+    ) throws -> (sut: HTTPService<[FeedItem]>.Type, client: HTTPClientSpy) {
         let client = HTTPClientSpy(result: result)
-        
-        let sut = ResourceLoader<[FeedItem]>.init(dataLoader: client.data(for:))
+        let sut = HTTPService<[FeedItem]>.self
         
         return (sut, client)
     }
@@ -34,9 +35,11 @@ final class LoadDessertFeedFromServerTests: XCTestCase {
         thumbnail: URL,
         mealID: String
     ) -> (model: FeedItem, json: [String: Any]) {
-        let item = FeedItem(name: name,
-                                   thumbnail: thumbnail,
-                                   mealID: mealID)
+        let item = FeedItem(
+            name: name,
+            thumbnail: thumbnail,
+            mealID: mealID
+        )
         
         let json = [
             "strMeal": name,
@@ -73,6 +76,7 @@ extension LoadDessertFeedFromServerTests {
         
         let _ = try await sut.loadResource(
             from: loadDessertFeedRequest,
+            dataLoader: client.data(for:),
             map: mapDataToDessertFeed
         )
         
@@ -89,10 +93,13 @@ extension LoadDessertFeedFromServerTests {
         
         let _ = try await sut.loadResource(
             from: loadDessertFeedRequest,
+            dataLoader: client.data(for:),
             map: mapDataToDessertFeed
         )
+        
         let _ = try await sut.loadResource(
             from: loadDessertFeedRequest,
+            dataLoader: client.data(for:),
             map: mapDataToDessertFeed
         )
         
@@ -105,11 +112,12 @@ extension LoadDessertFeedFromServerTests {
     }
     
     func test_load_DeliversErrorOnClientError() async throws {
-        let (sut, _) = try makeSUT(result: .failure(anyNSError))
+        let (sut, client) = try makeSUT(result: .failure(anyNSError))
         
         await expectErrorThrown(
             by: try await sut.loadResource(
                 from: loadDessertFeedRequest,
+                dataLoader: client.data(for:),
                 map: mapDataToDessertFeed
             )
         )
@@ -123,11 +131,12 @@ extension LoadDessertFeedFromServerTests {
                                                      httpVersion: nil,
                                                      headerFields: nil))
         
-        let (sut, _) = try makeSUT(result: .success((data, response)))
+        let (sut, client) = try makeSUT(result: .success((data, response)))
         
         await expect(
             try await sut.loadResource(
                 from: loadDessertFeedRequest,
+                dataLoader: client.data(for:),
                 map: mapDataToDessertFeed
             ),
             throws: FeedItemsMapper.Error.unexpectedServerResponse
@@ -138,11 +147,12 @@ extension LoadDessertFeedFromServerTests {
         let data = try invalidJSONData()
         let response = try any200HTTPURLResponse()
         
-        let (sut, _) = try makeSUT(result: .success((data, response)))
+        let (sut, client) = try makeSUT(result: .success((data, response)))
         
         await expect(
             try await sut.loadResource(
                 from: loadDessertFeedRequest,
+                dataLoader: client.data(for:),
                 map: mapDataToDessertFeed
             ),
             throwsErrorOfType: Swift.DecodingError.self
@@ -159,10 +169,11 @@ extension LoadDessertFeedFromServerTests {
         let data = try XCTUnwrap(emptyJSONString.data(using: .utf8))
         let response = try any200HTTPURLResponse()
         
-        let (sut, _) = try makeSUT(result: .success((data, response)))
+        let (sut, client) = try makeSUT(result: .success((data, response)))
         
         let feedItems = try await sut.loadResource(
             from: loadDessertFeedRequest,
+            dataLoader: client.data(for:),
             map: mapDataToDessertFeed
         )
         
@@ -185,10 +196,11 @@ extension LoadDessertFeedFromServerTests {
         let data = try makeItemsJSONData([item1.json, item2.json])
         let response = try any200HTTPURLResponse()
         
-        let (sut, _) = try makeSUT(result: .success((data, response)))
+        let (sut, client) = try makeSUT(result: .success((data, response)))
         
         let feedItems = try await sut.loadResource(
             from: loadDessertFeedRequest,
+            dataLoader: client.data(for:),
             map: mapDataToDessertFeed
         )
         

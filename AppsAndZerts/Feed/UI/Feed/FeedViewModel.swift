@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import HTTPService
 
 class FeedViewModel: ObservableObject {
     typealias Feed = [FeedItem]
@@ -21,7 +22,7 @@ class FeedViewModel: ObservableObject {
     }
     
     @Published var showingAlert = false
-    private let resourceLoader: ResourceLoader<Feed>
+    private let httpService: URLSessionHTTPService<Feed>
     private let resourceType: ResourceType
     
     var isLoading: Bool { feedState == .loading }
@@ -69,8 +70,9 @@ class FeedViewModel: ObservableObject {
         feedState = .loading
         
         self.resourceType = resourceType
-        resourceLoader = ResourceLoader(
-            dataLoader: URLSession.shared.data(for:)
+        httpService = URLSessionHTTPService(
+            for: FeedEndpoint.getAll(.dessert).urlRequest,
+            map: FeedItemsMapper.map
         )
     }
     
@@ -79,10 +81,7 @@ class FeedViewModel: ObservableObject {
         do {
             feedState = .loading
             
-            var resource = try await resourceLoader.loadResource(
-                from: FeedEndpoint.getAll(resourceType).urlRequest,
-                map: FeedItemsMapper.map
-            )
+            var resource = try await httpService.loadResource()
             
             resource.sort { $0.name < $1.name }
             feedState = .loaded(resource)

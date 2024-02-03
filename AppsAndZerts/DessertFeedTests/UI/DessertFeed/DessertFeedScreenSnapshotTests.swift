@@ -1,5 +1,5 @@
 //
-//  DetailsScreenSnapshotTests.swift
+//  DessertFeedScreenSnapshotTests.swift
 //  AppsAndZertsTests
 //
 //  Created by Dustyn August on 1/28/24.
@@ -13,9 +13,7 @@ import XCTest
 @testable import AppsAndZerts
 
 @MainActor
-final class DetailsScreenSnapshotTests: XCTestCase {
-    private let anyMealID = "any-meal-ID"
-    
+final class DessertFeedScreenSnapshotTests: XCTestCase {
     override func setUp() {
         super.setUp()
         
@@ -29,17 +27,9 @@ final class DetailsScreenSnapshotTests: XCTestCase {
     }
 }
 
-extension DetailsScreenSnapshotTests {
-    func test_DetailsScreen_BeforeFetchingDetails() {
-        let viewModel = DetailsViewModel(mealID: anyMealID)
-        let screen = DetailsScreen(viewModel: viewModel)
-        let viewController = UIHostingController(rootView: screen)
-        
-        assertSnapshot(of: viewController, as: .image(on: .iPhone13ProMax))
-    }
-    
-    func test_DetailsScreen_AfterFetchingDetails() async throws {
-        let response = try anyValidDetailsResponse()
+extension DessertFeedScreenSnapshotTests {
+    func test_DessertFeedScreen_BeforeFetchingFeed() async throws {
+        let response = try anyValidDessertFeedResponse()
         
         URLProtocolStub.stub(
             data: response.data,
@@ -47,10 +37,26 @@ extension DetailsScreenSnapshotTests {
             error: nil
         )
         
-        let viewModel = DetailsViewModel(mealID: anyMealID)
-        await viewModel.getDetails()
+        let viewModel = DessertFeedViewModel()
+        let screen = DessertFeedScreen(viewModel: viewModel)
+        let viewController = UIHostingController(rootView: screen)
         
-        let screen = DetailsScreen(viewModel: viewModel)
+        assertSnapshot(of: viewController, as: .image(on: .iPhone13ProMax))
+    }
+    
+    func test_DessertFeedScreen_AfterFetchingFeed() async throws {
+        let response = try anyValidDessertFeedResponse()
+        
+        URLProtocolStub.stub(
+            data: response.data,
+            response: response.urlResponse,
+            error: nil
+        )
+        
+        let viewModel = DessertFeedViewModel()
+        await viewModel.getFeed()
+        
+        let screen = DessertFeedScreen(viewModel: viewModel)
         let viewController = UIHostingController(rootView: screen)
         
         assertSnapshot(of: viewController, as: .image(on: .iPhone13ProMax))

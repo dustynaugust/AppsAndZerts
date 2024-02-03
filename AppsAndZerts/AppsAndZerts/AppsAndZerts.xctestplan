@@ -1,0 +1,37 @@
+{
+  "configurations" : [
+    {
+      "id" : "9053078B-0BA6-45A8-AF71-E69F102E3D72",
+      "name" : "Test Scheme Action",
+      "options" : {
+
+      }
+    }
+  ],
+  "defaultOptions" : {
+    "codeCoverage" : {
+      "targets" : [
+        {
+          "containerPath" : "container:AppsAndZerts.xcodeproj",
+          "identifier" : "3E0C1FB52B5F0A69008D525A",
+          "name" : "AppsAndZerts"
+        }
+      ]
+    },
+    "targetForVariableExpansion" : {
+      "containerPath" : "container:AppsAndZerts.xcodeproj",
+      "identifier" : "3E0C1FB52B5F0A69008D525A",
+      "name" : "AppsAndZerts"
+    }
+  },
+  "testTargets" : [
+    {
+      "target" : {
+        "containerPath" : "container:AppsAndZerts.xcodeproj",
+        "identifier" : "3E0C1FC52B5F0A6B008D525A",
+        "name" : "AppsAndZertsTests"
+      }
+    }
+  ],
+  "version" : 1
+}

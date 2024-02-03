@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import HTTPService
 
 class DetailsViewModel: ObservableObject {
     enum State: Equatable {
@@ -21,8 +22,8 @@ class DetailsViewModel: ObservableObject {
     }
     
     @Published var showingAlert = false
+    private let httpService: URLSessionHTTPService<DetailsItem>
     private let mealID: String
-    private let resourceLoader: ResourceLoader<DetailsItem>
     
     var isLoading: Bool { state == .loading }
     
@@ -32,8 +33,9 @@ class DetailsViewModel: ObservableObject {
         state = .loading
         self.mealID = mealID
         
-        resourceLoader = ResourceLoader(
-            dataLoader: URLSession.shared.data(for:)
+        httpService = URLSessionHTTPService(
+            for:  FeedEndpoint.get(mealID: mealID).urlRequest,
+            map: DetailsItemMapper.map
         )
     }
     
@@ -42,10 +44,7 @@ class DetailsViewModel: ObservableObject {
         do {
             state = .loading
             
-            let resource = try await resourceLoader.loadResource(
-                from: FeedEndpoint.get(mealID: mealID).urlRequest,
-                map: DetailsItemMapper.map
-            )
+            let resource = try await httpService.loadResource()
             
             state = .loaded(resource)
             

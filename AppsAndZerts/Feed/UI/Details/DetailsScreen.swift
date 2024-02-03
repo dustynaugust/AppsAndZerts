@@ -54,8 +54,7 @@ struct DetailsScreen: View {
         
         var body: some View {
             AsyncImage(url: thumbnail) { image in
-                image
-                    .resizable()
+                image.resizable()
                 
             } placeholder: {
                 ProgressView()
