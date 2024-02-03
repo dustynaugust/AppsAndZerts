@@ -71,7 +71,7 @@ class FeedViewModel: ObservableObject {
         
         self.resourceType = resourceType
         httpService = URLSessionHTTPService(
-            for: FeedEndpoint.getAll(.dessert).urlRequest,
+            for: FeedEndpoint.getAll(resourceType).urlRequest,
             map: FeedItemsMapper.map
         )
     }
