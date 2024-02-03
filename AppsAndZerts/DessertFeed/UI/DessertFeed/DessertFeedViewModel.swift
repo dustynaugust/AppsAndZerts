@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import HTTPService
 
 class DessertFeedViewModel: ObservableObject {
     typealias Feed = [DessertFeedItem]
@@ -21,7 +22,7 @@ class DessertFeedViewModel: ObservableObject {
     }
     
     @Published var showingAlert = false
-    private let resourceLoader: ResourceLoader<Feed>
+    private let httpService: URLSessionHTTPService<Feed>
     
     var isLoading: Bool { feedState == .loading }
     
@@ -39,8 +40,9 @@ class DessertFeedViewModel: ObservableObject {
     init() {
         feedState = .loading
         
-        resourceLoader = ResourceLoader(
-            dataLoader: URLSession.shared.data(for:)
+        httpService = URLSessionHTTPService(
+            for: DessertFeedEndpoints.getAllDesserts.urlRequest,
+            map: DessertFeedItemsMapper.map
         )
     }
     
@@ -49,10 +51,7 @@ class DessertFeedViewModel: ObservableObject {
         do {
             feedState = .loading
             
-            var resource = try await resourceLoader.loadResource(
-                from: DessertFeedEndpoints.getAllDesserts.urlRequest,
-                map: DessertFeedItemsMapper.map
-            )
+            var resource = try await httpService.loadResource()
             
             resource.sort { $0.name < $1.name }
             feedState = .loaded(resource)

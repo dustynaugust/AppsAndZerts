@@ -5,6 +5,8 @@
 //  Created by Dustyn August on 1/26/24.
 //
 
+import HTTPService
+import TestHelpers
 import XCTest
 
 @testable import AppsAndZerts
@@ -19,11 +21,9 @@ final class LoadDessertDetailsFromServerTests: XCTestCase {
         result: HTTPClientSpy.Result,
         file: StaticString = #filePath,
         line: UInt = #line
-    ) throws -> (sut: ResourceLoader<DessertDetailsItem>, client: HTTPClientSpy) {
+    ) throws -> (sut: HTTPService<DessertDetailsItem>.Type, client: HTTPClientSpy) {
         let client = HTTPClientSpy(result: result)
-        
-        let sut = ResourceLoader<DessertDetailsItem>.init(dataLoader: client.data(for:))
-        
+        let sut = HTTPService<DessertDetailsItem>.self
         return (sut, client)
     }
     
@@ -111,6 +111,7 @@ extension LoadDessertDetailsFromServerTests {
         
         let _ = try await sut.loadResource(
             from: loadDessertDetailsRequest,
+            dataLoader: client.data(for:),
             map: mapDataToDessertDetailsItem
         )
         
@@ -127,11 +128,13 @@ extension LoadDessertDetailsFromServerTests {
         
         let _ = try await sut.loadResource(
             from: loadDessertDetailsRequest,
+            dataLoader: client.data(for:),
             map: mapDataToDessertDetailsItem
         )
         
         let _ = try await sut.loadResource(
             from: loadDessertDetailsRequest,
+            dataLoader: client.data(for:),
             map: mapDataToDessertDetailsItem
         )
         
@@ -144,11 +147,12 @@ extension LoadDessertDetailsFromServerTests {
     }
     
     func test_load_DeliversErrorOnClientError() async throws {
-        let (sut, _) = try makeSUT(result: .failure(anyNSError))
+        let (sut, client) = try makeSUT(result: .failure(anyNSError))
         
         await expectErrorThrown(
             by: try await sut.loadResource(
                 from: loadDessertDetailsRequest,
+                dataLoader: client.data(for:),
                 map: mapDataToDessertDetailsItem
             )
         )
@@ -162,11 +166,12 @@ extension LoadDessertDetailsFromServerTests {
                                                      httpVersion: nil,
                                                      headerFields: nil))
         
-        let (sut, _) = try makeSUT(result: .success((data, response)))
+        let (sut, client) = try makeSUT(result: .success((data, response)))
         
         await expect(
             try await sut.loadResource(
                 from: loadDessertDetailsRequest,
+                dataLoader: client.data(for:),
                 map: mapDataToDessertDetailsItem
             ),
             throws: DessertDetailsItemMapper.Error.unexpectedServerResponse
@@ -177,11 +182,12 @@ extension LoadDessertDetailsFromServerTests {
         let data = try invalidJSONData()
         let response = try any200HTTPURLResponse()
         
-        let (sut, _) = try makeSUT(result: .success((data, response)))
+        let (sut, client) = try makeSUT(result: .success((data, response)))
         
         await expect(
             try await sut.loadResource(
                 from: loadDessertDetailsRequest,
+                dataLoader: client.data(for:),
                 map: mapDataToDessertDetailsItem
             ),
             throwsErrorOfType: Swift.DecodingError.self
@@ -198,11 +204,12 @@ extension LoadDessertDetailsFromServerTests {
         let data = try XCTUnwrap(emptyJSONString.data(using: .utf8))
         let response = try any200HTTPURLResponse()
         
-        let (sut, _) = try makeSUT(result: .success((data, response)))
+        let (sut, client) = try makeSUT(result: .success((data, response)))
         
         await expect(
             try await sut.loadResource(
                 from: loadDessertDetailsRequest,
+                dataLoader: client.data(for:),
                 map: mapDataToDessertDetailsItem
             ),
             throws: DessertDetailsItemMapper.Error.emptyServerResponse
@@ -255,10 +262,11 @@ extension LoadDessertDetailsFromServerTests {
         let data = try makeItemsJSONData([item1.json, item2.json])
         let response = try any200HTTPURLResponse()
         
-        let (sut, _) = try makeSUT(result: .success((data, response)))
+        let (sut, client) = try makeSUT(result: .success((data, response)))
         
         let detailItem = try await sut.loadResource(
             from: loadDessertDetailsRequest,
+            dataLoader: client.data(for:),
             map: mapDataToDessertDetailsItem
         )
         

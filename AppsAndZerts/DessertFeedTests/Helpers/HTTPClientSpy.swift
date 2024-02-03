@@ -9,7 +9,8 @@ import Foundation
 
 @testable import AppsAndZerts
 
-class HTTPClientSpy: URLSessionProtocol {
+class HTTPClientSpy {
+    typealias Response = (data: Data, urlResponse: URLResponse)
     typealias Result = Swift.Result<Response, Error>
     
     private let result: Result
